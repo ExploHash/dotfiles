@@ -16,7 +16,6 @@
   "modules-right": [
     // "mpd",
     // "idle_inhibitor",
-    // "pulseaudio",
     // "network",
     // "power-profiles-daemon",
     "tray",
@@ -27,7 +26,8 @@
     // "backlight",
     // "keyboard-state",
     // "sway/language",
-    // "battery",
+    "pulseaudio",
+    "battery",
     // "battery#bat2",
     "clock"
     // "custom/power",
@@ -160,7 +160,8 @@
     "format-alt": "{time} {icon}",
     // "format-good": "", // An empty format will hide the module
     // "format-full": "",
-    "format-icons": ["", "", "", "", ""]
+    "format-icons": ["", "", "", "", ""],
+    "interval": 2
   },
   "battery#bat2": {
     "bat": "BAT2"
@@ -186,12 +187,13 @@
     "format-alt": "{ifname}: {ipaddr}/{cidr}"
   },
   "pulseaudio": {
-    // "scroll-step": 1, // %, can be a float
+    "scroll-step": 0.2, // %, can be a float
     "format": "{volume}% {icon} {format_source}",
     "format-bluetooth": "{volume}% {icon} {format_source}",
     "format-bluetooth-muted": " {icon} {format_source}",
     "format-muted": " {format_source}",
-    "format-source": "{volume}% ",
+    // "format-source": "{volume}% ",
+    "format-source": "",
     "format-source-muted": "",
     "format-icons": {
       "headphone": "",
