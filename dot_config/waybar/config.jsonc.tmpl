@@ -26,7 +26,9 @@
     // "backlight",
     // "keyboard-state",
     // "sway/language",
+    {{ if eq .chezmoi.hostname "Saroamy" -}}
     "pulseaudio",
+    {{ end -}}
     "battery",
     // "battery#bat2",
     "clock"
