@@ -31,8 +31,10 @@
     {{ end -}}
     "battery",
     // "battery#bat2",
+    {{ if eq .chezmoi.hostname "Saroamy" -}}
+    "custom/user",
+    {{ end -}}
     "clock"
-    // "custom/power",
   ],
   // Modules configuration
   "hyprland/workspaces": {
@@ -221,16 +223,9 @@
       "on-scroll-up": "playerctl next",
       "on-scroll-down": "playerctl previous"
   },
-  "custom/power": {
-    "format": "⏻ ",
-    "tooltip": false,
-    "menu": "on-click",
-    "menu-file": "$HOME/.config/waybar/power_menu.xml", // Menu file in resources folder
-    "menu-actions": {
-      "shutdown": "shutdown",
-      "reboot": "reboot",
-      "suspend": "systemctl suspend",
-      "hibernate": "systemctl hibernate"
-    }
+  "custom/user": {
+    "exec": "echo ${USER^}",
+    "format": " {text}",
+    "tooltip": false
   }
 }
