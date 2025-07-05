@@ -105,10 +105,10 @@ button:hover {
 .custom-spotify,
 #power-profiles-daemon,
 #mpd {
-    padding: 8px 15px;
+    padding: 8px 10px;
     margin-right: 4px;
-    border: 1.5px solid white;
-    border-radius: 20px;
+    border-bottom: 1.5px solid white;
+    /* border-radius: 20px; */
     color: white;
 }
 
@@ -160,12 +160,6 @@ button:hover {
 
 label:focus {
     background-color: #000000;
-}
-
-#cpu, #memory, #clock, #temperature {
-    border: 1.5px solid white;
-    border-radius: 20px;
-    color: white;
 }
 
 #disk {
