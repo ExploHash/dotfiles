@@ -99,14 +99,12 @@ $screenshooter = flameshot gui
 # Autostart necessary processes (like notifications daemons, status bars, etc.)
 # Or execute your favorite apps at launch like this:
 
-exec = swww img ~/bg
 exec-once = swww-daemon
 exec-once = waybar
 exec-once = dunst
+exec = swww img ~/bg
 exec = [maxsize 400 400] ~/.scripts/yay-daily.sh
-{{ if eq .chezmoi.hostname "Zoamy" -}}
-exec = swww img ~/bggif --no-resize --transition-type none
-{{ else if eq .chezmoi.hostname "Saroamy" -}}
+{{ if eq .chezmoi.hostname "Saroamy" -}}
 exec-once = nm-applet &
 {{ end -}}
 
