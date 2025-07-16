@@ -21,7 +21,7 @@
     "tray",
     "custom/spotify",
     "cpu",
-    "memory",
+    "custom/memory",
     "temperature",
     // "backlight",
     // "keyboard-state",
@@ -127,9 +127,22 @@
     "spacing": 10
   },
   "clock": {
-    // "timezone": "America/New_York",
     "interval": 1,
-    "format": "{:%Y-%m-%d %H:%M:%S}"
+    "format": "{:%Y-%m-%d %H:%M:%S}",
+    "tooltip-format": "<tt><small>{calendar}</small></tt>",
+	"calendar": {
+		"mode"          : "month",
+		"mode-mon-col"  : 3,
+		"weeks-pos"     : "right",
+		"on-scroll"     : 1,
+		"format": {
+			"today":      "<span color='#ff6699'><b><u>{}</u></b></span>"
+		}
+	},
+	"actions": {
+		"on-scroll-up": "shift_up",
+		"on-scroll-down": "shift_down"
+	}
   },
   "cpu": {
     "format": "{usage}% ",
@@ -139,6 +152,12 @@
   "memory": {
     "format": "{}% ",
     "interval": 1
+  },
+  "custom/memory": {
+    "exec": "~/.scripts/memory_swap_json.sh",
+    "return-type": "json",
+    "interval": 1,
+    "format": "{text} ",
   },
   "temperature": {
     "interval": 3,
