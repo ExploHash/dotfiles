@@ -22,7 +22,7 @@ else
     export GREETING="Good evening"
 fi
 # Launch kitty with yay
-kitty --class smolkitty -e bash -c 'cowsay -f tux \"$GREETING $USER! You want to run yay\?\"; yay; echo "Press enter to leave..."; read -p ""' &
+kitty --class smolkitty -e bash -c 'cowsay -f tux \"$GREETING $USER! You want to run yay\?\"; yay; sl -w' &
 
 # Log the current date
 echo "$TODAY" > "$LOG_FILE"
