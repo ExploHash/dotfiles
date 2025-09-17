@@ -10,7 +10,7 @@
 
 window,
 tooltip {
-    background-color: alpha(#1e1e2e, 0.6);
+    background-color: alpha(#1e1e2e, 0.4);
     border-radius: 10px;
 }
 
