@@ -32,6 +32,11 @@ workspace=7,persistent:true
 workspace=8,persistent:true
 workspace=9,persistent:true
 workspace=10,persistent:true
+workspace=11,persistent:true
+workspace=12,persistent:true
+workspace=13,persistent:true
+workspace=14,persistent:true
+workspace=15,persistent:true
 
 {{ if eq .chezmoi.hostname "Zoamy" -}}
 monitor=DVI-D-1, 1920x1080@60, 1920x0, 1
@@ -49,20 +54,7 @@ workspace=8,monitor:DVI-D-1
 workspace=9,monitor:DVI-D-1
 workspace=10,monitor:DVI-D-1
 {{ else if eq .chezmoi.hostname "Saroamy" -}}
-
-    {{ if eq .chezmoi.username "jimmy" -}}
-    monitor=desc:Acer Technologies KA242Y 0x00801093, preferred, 0x0, 1
-    monitor=desc:Iiyama North America PL2473H 1120444902770, preferred, 1920x0, 1
-    monitor=eDP-1, 1920x1200@60, 0x1080, 1
-    {{ end -}}
-monitor=HDMI-A-1, preferred, 0x0, 1
-monitor=eDP-1, 1920x1200@60, auto-down, 1
-
-workspace=11,persistent:true
-workspace=12,persistent:true
-workspace=13,persistent:true
-workspace=14,persistent:true
-workspace=15,persistent:true
+monitor=eDP-1, 1920x1200@60, 0x1080, 1
 
 workspace=1,monitor:eDP-1
 workspace=2,monitor:eDP-1
@@ -70,17 +62,40 @@ workspace=3,monitor:eDP-1
 workspace=4,monitor:eDP-1
 workspace=5,monitor:eDP-1
 
-workspace=6,monitor:HDMI-A-1
-workspace=7,monitor:HDMI-A-1
-workspace=8,monitor:HDMI-A-1
-workspace=9,monitor:HDMI-A-1
-workspace=10,monitor:HDMI-A-1
+    {{ if eq .chezmoi.username "jimmy" -}}
+    monitor=desc:Acer Technologies KA242Y 0x00801093, preferred, 0x0, 1
+    monitor=desc:Iiyama North America PL2473H 1120444902770, preferred, 1920x0, 1
 
-workspace=11,monitor:DP-2
-workspace=12,monitor:DP-2
-workspace=13,monitor:DP-2
-workspace=14,monitor:DP-2
-workspace=15,monitor:DP-2
+    workspace=6,monitor:desc:Acer Technologies KA242Y 0x00801093
+    workspace=7,monitor:desc:Acer Technologies KA242Y 0x00801093
+    workspace=8,monitor:desc:Acer Technologies KA242Y 0x00801093
+    workspace=9,monitor:desc:Acer Technologies KA242Y 0x00801093
+    workspace=10,monitor:desc:Acer Technologies KA242Y 0x00801093
+
+    workspace=11,monitor:desc:Iiyama North America PL2473H 1120444902770
+    workspace=12,monitor:desc:Iiyama North America PL2473H 1120444902770
+    workspace=13,monitor:desc:Iiyama North America PL2473H 1120444902770
+    workspace=14,monitor:desc:Iiyama North America PL2473H 1120444902770
+    workspace=15,monitor:desc:Iiyama North America PL2473H 1120444902770
+    {{ else if eq .chezmoi.username "jimmy_akela" -}}
+    monitor=desc:HP Inc. HP 27f 3CM1021TWY, 1920x1080@74.97Hz, -960x0, 1
+    monitor=desc:HP Inc. HP 27f 3CM1021TWW, 1920x1080@74.97Hz, 960x0, 1
+    monitor=desc:Lenovo Group Limited P27q-30 V30CF4L0, 2560x1440@69.97Hz, 0x0, 1
+    monitor=desc:Hewlett Packard HP 27es 3CM7430F4J, preferred, auto-up, 1
+    monitor=eDP-1, 1920x1200@60, auto-down, 1
+
+    workspace=6,monitor:desc:Hewlett Packard HP 27es 3CM7430F4J
+    workspace=7,monitor:desc:Hewlett Packard HP 27es 3CM7430F4J
+    workspace=8,monitor:desc:Hewlett Packard HP 27es 3CM7430F4J
+    workspace=9,monitor:desc:Hewlett Packard HP 27es 3CM7430F4J
+    workspace=10,monitor:desc:Hewlett Packard HP 27es 3CM7430F4J
+
+    workspace=11,monitor:desc:HP Inc. HP 27f 3CM1021TWW
+    workspace=12,monitor:desc:HP Inc. HP 27f 3CM1021TWW
+    workspace=13,monitor:desc:HP Inc. HP 27f 3CM1021TWW
+    workspace=14,monitor:desc:HP Inc. HP 27f 3CM1021TWW
+    workspace=15,monitor:desc:HP Inc. HP 27f 3CM1021TWW
+    {{ end }}
 {{ end -}}
 
 ###################
@@ -133,7 +148,7 @@ env = HYPRCURSOR_SIZE,24
 # https://wiki.hyprland.org/Configuring/Variables/#general
 general {
     gaps_in = 5
-    gaps_out = 5, 20, 20, 20
+    gaps_out = 10, 20, 20, 20
 
     border_size = 2
 
@@ -206,33 +221,17 @@ animations {
     animation = workspacesOut, 1, 1.94, almostLinear, fade
 }
 
-# Ref https://wiki.hyprland.org/Configuring/Workspace-Rules/
-# "Smart gaps" / "No gaps when only"
-# uncomment all if you wish to use that.
-# workspace = w[tv1], gapsout:0, gapsin:0
-# workspace = f[1], gapsout:0, gapsin:0
-# windowrulev2 = bordersize 0, floating:0, onworkspace:w[tv1]
-# windowrulev2 = rounding 0, floating:0, onworkspace:w[tv1]
-# windowrulev2 = bordersize 0, floating:0, onworkspace:f[1]
-# windowrulev2 = rounding 0, floating:0, onworkspace:f[1]
 windowrulev2 = noborder, focus:0
 windowrulev2 = noborder, focus:1
 
-{{ if eq .chezmoi.hostname "Saroamy" -}}
 windowrulev2 = float,class:^(smolkitty)$
 windowrulev2 = size 800 600,class:^(smolkitty)$
 windowrulev2 = move 100 100,class:^(smolkitty)$
-{{ end -}}
 
 # See https://wiki.hyprland.org/Configuring/Dwindle-Layout/ for more
 dwindle {
     pseudotile = true # Master switch for pseudotiling. Enabling is bound to mainMod + P in the keybinds section below
     preserve_split = true # You probably want this
-}
-
-# See https://wiki.hyprland.org/Configuring/Master-Layout/ for more
-master {
-    new_status = master
 }
 
 # https://wiki.hyprland.org/Configuring/Variables/#misc
@@ -265,11 +264,6 @@ input {
     }
 }
 
-# https://wiki.hyprland.org/Configuring/Variables/#gestures
-gestures {
-    workspace_swipe = false
-}
-
 # Example per-device config
 # See https://wiki.hyprland.org/Configuring/Keywords/#per-device-input-configs for more
 device {
@@ -278,26 +272,28 @@ device {
 }
 
 
-
+###################
 ### KEYBINDINGS ###
 ###################
 
 # See https://wiki.hyprland.org/Configuring/Keywords/
 $mainMod = SUPER # Sets "Windows" key as main modifier
 
-# Example binds, see https://wiki.hyprland.org/Configuring/Binds/ for more
+# Exec binds
 bind = $mainMod, Q, exec, $browser
 bind = $mainMod, A, exec, $editor
-bind = $mainMod, Return, exec, $terminal
 bind = $mainMod, S, exec, $screenshooter
 bind = $mainMod, L, exec, hyprlock
-bind = $mainMod, C, killactive,
-bind = $mainMod, M, exit,
 bind = $mainMod, E, exec, $fileManager
-bind = $mainMod, V, togglefloating,
 bind = $mainMod, R, exec, $menu
-bind = $mainMod, P, pseudo, # dwindle
-bind = $mainMod, J, togglesplit, # dwindle
+bind = $mainMod, Return, exec, $terminal
+
+# Window based binds
+bind = $mainMod, C, killactive,
+bind = $mainMod, V, togglefloating,
+bind = $mainMod, J, togglesplit
+bind = $mainMod, P, pin,
+bind = $mainMod, F, fullscreen,
 
 # Move focus with mainMod + arrow keys
 bind = $mainMod, left, movefocus, l
@@ -305,70 +301,78 @@ bind = $mainMod, right, movefocus, r
 bind = $mainMod, up, movefocus, u
 bind = $mainMod, down, movefocus, d
 
+# Move windows with mainMod + SHIFT + arrow keys
+bind = $mainMod SHIFT, left, movewindow, l
+bind = $mainMod SHIFT, right, movewindow, r
+bind = $mainMod SHIFT, up, movewindow, u
+bind = $mainMod SHIFT, down, movewindow, d
+
+# Global
+bind = $mainMod, M, exit,
+
 # Switch workspaces with mainMod + [0-9]
+{{ if eq .chezmoi.hostname "Zoamy" -}}
 bind = $mainMod, 1, workspace, 1
 bind = $mainMod, 2, workspace, 2
 bind = $mainMod, 3, workspace, 3
 bind = $mainMod, 4, workspace, 4
 bind = $mainMod, 5, workspace, 5
-
-{{ if eq .chezmoi.hostname "Zoamy" -}}
 bind = $mainMod, 6, workspace, 6
 bind = $mainMod, 7, workspace, 7
 bind = $mainMod, 8, workspace, 8
 bind = $mainMod, 9, workspace, 9
 bind = $mainMod, 0, workspace, 10
 {{ else if eq .chezmoi.hostname "Saroamy" -}}
-bind = $mainMod Control_L, 1, workspace, 6
-bind = $mainMod Control_L, 2, workspace, 7
-bind = $mainMod Control_L, 3, workspace, 8
-bind = $mainMod Control_L, 4, workspace, 9
-bind = $mainMod Control_L, 5, workspace, 10
-bind = $mainMod Control_L, 6, workspace, 11
-bind = $mainMod Control_L, 7, workspace, 12
-bind = $mainMod Control_L, 8, workspace, 13
-bind = $mainMod Control_L, 9, workspace, 14
-bind = $mainMod Control_L, 0, workspace, 15
+bind = $mainMod, 1, workspace, 1
+bind = $mainMod, 2, workspace, 2
+bind = $mainMod, 3, workspace, 3
+bind = $mainMod, 4, workspace, 4
+bind = $mainMod, 5, workspace, 5
+bind = $mainMod, F1, workspace, 6
+bind = $mainMod, F2, workspace, 7
+bind = $mainMod, F3, workspace, 8
+bind = $mainMod, F4, workspace, 9
+bind = $mainMod, F5, workspace, 10
+bind = $mainMod, F6, workspace, 11
+bind = $mainMod, F7, workspace, 12
+bind = $mainMod, F8, workspace, 13
+bind = $mainMod, F9, workspace, 14
+bind = $mainMod, F0, workspace, 15
 {{ end -}}
 
 # Move active window to a workspace with mainMod + SHIFT + [0-9]
+{{ if eq .chezmoi.hostname "Zoamy" -}}
 bind = $mainMod SHIFT, 1, movetoworkspace, 1
 bind = $mainMod SHIFT, 2, movetoworkspace, 2
 bind = $mainMod SHIFT, 3, movetoworkspace, 3
 bind = $mainMod SHIFT, 4, movetoworkspace, 4
 bind = $mainMod SHIFT, 5, movetoworkspace, 5
-
-{{ if eq .chezmoi.hostname "Zoamy" -}}
 bind = $mainMod SHIFT, 6, movetoworkspace, 6
 bind = $mainMod SHIFT, 7, movetoworkspace, 7
 bind = $mainMod SHIFT, 8, movetoworkspace, 8
 bind = $mainMod SHIFT, 9, movetoworkspace, 9
 bind = $mainMod SHIFT, 0, movetoworkspace, 10
 {{ else if eq .chezmoi.hostname "Saroamy" -}}
-bind = $mainMod SHIFT Control_L, 1, movetoworkspace, 6
-bind = $mainMod SHIFT Control_L, 2, movetoworkspace, 7
-bind = $mainMod SHIFT Control_L, 3, movetoworkspace, 8
-bind = $mainMod SHIFT Control_L, 4, movetoworkspace, 9
-bind = $mainMod SHIFT Control_L, 5, movetoworkspace, 10
-bind = $mainMod SHIFT Control_L, 6, movetoworkspace, 11
-bind = $mainMod SHIFT Control_L, 7, movetoworkspace, 12
-bind = $mainMod SHIFT Control_L, 8, movetoworkspace, 13
-bind = $mainMod SHIFT Control_L, 9, movetoworkspace, 14
-bind = $mainMod SHIFT Control_L, 0, movetoworkspace, 15
+bind = $mainMod SHIFT, 1, movetoworkspace, 1
+bind = $mainMod SHIFT, 2, movetoworkspace, 2
+bind = $mainMod SHIFT, 3, movetoworkspace, 3
+bind = $mainMod SHIFT, 4, movetoworkspace, 4
+bind = $mainMod SHIFT, 5, movetoworkspace, 5
+bind = $mainMod SHIFT, F1, movetoworkspace, 6
+bind = $mainMod SHIFT, F2, movetoworkspace, 7
+bind = $mainMod SHIFT, F3, movetoworkspace, 8
+bind = $mainMod SHIFT, F4, movetoworkspace, 9
+bind = $mainMod SHIFT, F5, movetoworkspace, 10
+bind = $mainMod SHIFT, F6, movetoworkspace, 11
+bind = $mainMod SHIFT, F7, movetoworkspace, 12
+bind = $mainMod SHIFT, F8, movetoworkspace, 13
+bind = $mainMod SHIFT, F9, movetoworkspace, 14
+bind = $mainMod SHIFT, F0, movetoworkspace, 15
 {{ end -}}
-
-# Example special workspace (scratchpad)
-#bind = $mainMod, S, togglespecialworkspace, magic
-#bind = $mainMod SHIFT, S, movetoworkspace, special:magic
-
-# Scroll through existing workspaces with mainMod + scroll
-bind = $mainMod, mouse_down, workspace, e+1
-bind = $mainMod, mouse_up, workspace, e-1
 
 # Move/resize windows with mainMod + LMB/RMB and dragging
 bindm = $mainMod, mouse:272, movewindow
 bindm = $mainMod, mouse:273, resizewindow
-
 #bind = $mainMod, dot, movewindow, mon:1
 
 # Laptop multimedia keys for volume and LCD brightness
@@ -388,16 +392,6 @@ bindl = , XF86AudioPrev, exec, playerctl previous
 ##############################
 ### WINDOWS AND WORKSPACES ###
 ##############################
-
-# See https://wiki.hyprland.org/Configuring/Window-Rules/ for more
-# See https://wiki.hyprland.org/Configuring/Workspace-Rules/ for workspace rules
-
-# Example windowrule v1
-# windowrule = float, ^(kitty)$
-
-# Example windowrule v2
-# windowrulev2 = float,class:^(kitty)$,title:^(kitty)$
-
 # Ignore maximize requests from apps. You'll probably like this.
 windowrulev2 = suppressevent maximize, class:.*
 
