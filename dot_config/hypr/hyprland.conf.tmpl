@@ -49,6 +49,12 @@ workspace=8,monitor:DVI-D-1
 workspace=9,monitor:DVI-D-1
 workspace=10,monitor:DVI-D-1
 {{ else if eq .chezmoi.hostname "Saroamy" -}}
+
+    {{ if eq .chezmoi.username "jimmy" -}}
+    monitor=desc:Acer Technologies KA242Y 0x00801093, preferred, 0x0, 1
+    monitor=desc:Iiyama North America PL2473H 1120444902770, preferred, 1920x0, 1
+    monitor=eDP-1, 1920x1200@60, 0x1080, 1
+    {{ end -}}
 monitor=HDMI-A-1, preferred, 0x0, 1
 monitor=eDP-1, 1920x1200@60, auto-down, 1
 
