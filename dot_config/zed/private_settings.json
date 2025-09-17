@@ -7,6 +7,19 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "ssh_connections": [
+    {
+      "host": "192.168.42.189",
+      "username": "pi",
+      "projects": [
+        {
+          "paths": [
+            "/home/pi/scriptie-raspi"
+          ]
+        }
+      ]
+    }
+  ],
   "icon_theme": "Bearded Icon Theme",
   "languages": {
     "Markdown": {
@@ -21,7 +34,7 @@
     "default_profile": "write",
     "always_allow_tool_actions": true,
     "default_model": {
-      "provider": "zed.dev",
+      "provider": "copilot_chat",
       "model": "claude-sonnet-4"
     },
   },
@@ -30,7 +43,7 @@
   "theme": {
     "mode": "dark",
     "light": "Night Owl Dark",
-    "dark": "Modest Dark"
+    "dark": "Moonlight"
   },
   "format_on_save": "off"
 }
