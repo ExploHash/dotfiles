@@ -1,17 +1,16 @@
 window {
 margin: 0px;
-border: 2px solid #414868;
 border-radius: 5px;
-background-color: #24283b;
+background-color: alpha(#1e1e2e, 0.4);
 font-family: JetBrains Mono NL SemiBold;
 font-size: 16px;
 }
 
 #input {
 margin: 5px;
-border: 1px solid #24283b;
+border: 1px solid alpha(#1e1e2e, 0.4);
 color: #c0caf5;
-background-color: #24283b;
+background-color: alpha(#1e1e2e, 0.4);
 }
 
 #input image {
@@ -21,13 +20,13 @@ background-color: #24283b;
 #inner-box {
 margin: 5px;
 border: none;
-background-color: #24283b;
+background-color: alpha(#1e1e2e, 0.4);
 }
 
 #outer-box {
 margin: 5px;
 border: none;
-background-color: #24283b;
+background-color: alpha(#1e1e2e, 0.4);
 }
 
 #scroll {
