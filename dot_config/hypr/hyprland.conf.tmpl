@@ -27,6 +27,23 @@ workspace=2,persistent:true
 workspace=3,persistent:true
 workspace=4,persistent:true
 workspace=5,persistent:true
+
+
+{{ if eq .chezmoi.hostname "Zoamy" -}}
+monitor=desc:AOC Q27G3XMN 1APR6JA002553,2560x1440@180.00Hz, 0x0, 1
+monitor=desc:Acer Technologies KA242Y 0x00801093, 1920x1080@75, 2560x-250, 1, transform, 3
+workspace=6,persistent:true
+
+workspace=1,monitor:desc:AOC Q27G3XMN 1APR6JA002553
+workspace=2,monitor:desc:AOC Q27G3XMN 1APR6JA002553
+workspace=3,monitor:desc:AOC Q27G3XMN 1APR6JA002553
+workspace=4,monitor:desc:AOC Q27G3XMN 1APR6JA002553
+workspace=5,monitor:desc:AOC Q27G3XMN 1APR6JA002553
+
+workspace=6,monitor:desc:Acer Technologies KA242Y 0x00801093
+
+{{ else if eq .chezmoi.hostname "Saroamy" -}}
+monitor=eDP-1, 1920x1200@60, 0x1080, 1
 workspace=6,persistent:true
 workspace=7,persistent:true
 workspace=8,persistent:true
@@ -37,26 +54,6 @@ workspace=12,persistent:true
 workspace=13,persistent:true
 workspace=14,persistent:true
 workspace=15,persistent:true
-
-{{ if eq .chezmoi.hostname "Zoamy" -}}
-monitor=desc:AOC Q27G3XMN 1APR6JA002553,2560x1440@180.00Hz, 0x0, 1
-monitor=DVI-D-1, 1920x1080@60, 1920x0, 1
-monitor=HDMI-A-2, 1920x1080@75, 0x0, 1
-
-workspace=1,monitor:desc:AOC Q27G3XMN 1APR6JA002553
-workspace=2,monitor:desc:AOC Q27G3XMN 1APR6JA002553
-workspace=3,monitor:desc:AOC Q27G3XMN 1APR6JA002553
-workspace=4,monitor:desc:AOC Q27G3XMN 1APR6JA002553
-workspace=5,monitor:desc:AOC Q27G3XMN 1APR6JA002553
-
-workspace=6,monitor:DVI-D-1
-workspace=7,monitor:DVI-D-1
-workspace=8,monitor:DVI-D-1
-workspace=9,monitor:DVI-D-1
-workspace=10,monitor:DVI-D-1
-{{ else if eq .chezmoi.hostname "Saroamy" -}}
-monitor=eDP-1, 1920x1200@60, 0x1080, 1
-
 workspace=1,monitor:eDP-1
 workspace=2,monitor:eDP-1
 workspace=3,monitor:eDP-1
