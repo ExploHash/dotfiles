@@ -46,7 +46,7 @@
   "theme": {
     "mode": "dark",
     "light": "Night Owl Dark",
-    "dark": "Moonlight"
+    "dark": "Monokai-og"
   },
   "format_on_save": "off"
 }
