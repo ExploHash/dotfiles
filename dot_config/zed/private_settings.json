@@ -7,6 +7,9 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "edit_predictions": {
+    "provider": "copilot"
+  },
   "ssh_connections": [
     {
       "host": "192.168.42.189",
@@ -26,13 +29,12 @@
       "show_edit_predictions": false
     }
   },
-  "features": {
-    "edit_prediction_provider": "copilot"
-  },
   "autosave": "on_focus_change",
   "agent": {
+    "tool_permissions": {
+      "default": "allow"
+    },
     "default_profile": "write",
-    "always_allow_tool_actions": true,
     "default_model": {
       "provider": "copilot_chat",
       "model": "claude-sonnet-4"

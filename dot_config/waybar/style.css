@@ -5,9 +5,8 @@
 }
 
 window#waybar {
-    background-color: alpha(#1e1e2e, 0.4);
     font-weight: bold;
-    border-radius: 10px;
+    background-color: transparent;
     color: alpha(#ffffff, 0.9);
     transition-property: background-color;
     transition-duration: .5s;
@@ -26,7 +25,10 @@ button:hover {
 
 #workspaces {
     font-weight: normal;
-    padding-left: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    background-color: #1b3831;
+    border-radius: 24px;
 }
 
 #workspaces button {
@@ -61,8 +63,18 @@ button:hover {
     background-color: #eb4d4b;
 }
 
+.modules-center {
+    padding-left: 15px;
+    padding-right: 15px;
+    background-color: #1b3831;
+    border-radius: 24px;
+}
+
 .modules-right {
-    padding-right: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    background-color: #1b3831;
+    border-radius: 24px;
 }
 
 .modules-right > widget > * {
