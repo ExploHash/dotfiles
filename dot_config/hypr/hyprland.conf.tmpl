@@ -242,7 +242,6 @@ windowrule {
 
 # See https://wiki.hyprland.org/Configuring/Dwindle-Layout/ for more
 dwindle {
-    pseudotile = true # Master switch for pseudotiling. Enabling is bound to mainMod + P in the keybinds section below
     preserve_split = true # You probably want this
 }
 
@@ -303,7 +302,7 @@ bind = $mainMod, Return, exec, $terminal
 # Window based binds
 bind = $mainMod, C, killactive,
 bind = $mainMod, V, togglefloating,
-bind = $mainMod, J, togglesplit
+bind = $mainMod, J, layoutmsg, togglesplit
 bind = $mainMod, P, pin,
 bind = $mainMod, F, fullscreen,
 
