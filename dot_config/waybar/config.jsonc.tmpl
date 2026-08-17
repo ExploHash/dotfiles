@@ -15,6 +15,7 @@
     "custom/spotify",
     "cpu",
     "custom/memory",
+    "custom/claude",
     "temperature",
     {{ if eq .chezmoi.hostname "Saroamy" -}}
     "pulseaudio",
@@ -82,6 +83,12 @@
     "return-type": "json",
     "interval": 1,
     "format": "{text} ",
+  },
+  "custom/claude": {
+    "exec": "~/.scripts/claude_usage_waybar.sh",
+    "return-type": "json",
+    "interval": 300,
+    "format": "{text} <span font_family='Font Awesome 7 Free' weight='900'></span>",
   },
   "temperature": {
     "interval": 3,
