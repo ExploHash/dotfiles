@@ -1,0 +1,371 @@
+-- Hyprland Lua config (chezmoi template), ported from hyprland.conf (2026-11-04).
+-- Wiki: https://wiki.hypr.land/configuring/
+-- API stubs: /usr/share/hypr/stubs/hl.meta.lua
+
+
+------------------
+---- MONITORS ----
+------------------
+
+-- Per-machine setup (chezmoi template):
+--   MONITORS         monitor specs, applied in order
+--   WORKSPACES       number of persistent workspaces
+--   WORKSPACE_OUTPUT workspace -> monitor it lives on
+--   FKEY_WORKSPACES  true: 1-5 on number keys, 6+ on F1-F10; false: 1-9,0 on number keys
+--   TOP_EXTERNALS    if set, workspaces 6-10 follow the first of these monitors that is
+--                    connected, or the only external monitor if exactly one is connected
+local MONITORS, WORKSPACES, WORKSPACE_OUTPUT, FKEY_WORKSPACES, TOP_EXTERNALS
+local function wsRange(from, to, output)
+    for ws = from, to do WORKSPACE_OUTPUT[ws] = output end
+end
+
+{{ if eq .chezmoi.hostname "Zoamy" -}}
+local AOC  = "desc:AOC Q27G3XMN 1APR6JA002553"
+local ACER = "desc:Acer Technologies KA242Y 0x00801093"
+MONITORS = {
+    { output = AOC,  mode = "2560x1440@180", position = "0x0",    scale = 1 },
+    { output = ACER, mode = "1920x1080@75",  position = "2560x0", scale = 1 },
+}
+WORKSPACES       = 10
+WORKSPACE_OUTPUT = {}
+wsRange(1, 5, AOC)
+wsRange(6, 10, ACER)
+FKEY_WORKSPACES  = false
+{{- else if eq .chezmoi.hostname "Saroamy" }}
+WORKSPACES       = 15
+WORKSPACE_OUTPUT = {}
+wsRange(1, 5, "eDP-1")
+FKEY_WORKSPACES  = true
+{{-   if eq .chezmoi.username "jimmy" }}
+local ACER   = "desc:Acer Technologies KA242Y 0x00801093"
+local IIYAMA = "desc:Iiyama North America PL2473H 1120444902770"
+MONITORS = {
+    { output = "eDP-1", mode = "1920x1200@60", position = "0x1080", scale = 1 },
+    { output = ACER,    mode = "preferred",    position = "0x0",    scale = 1 },
+    { output = IIYAMA,  mode = "preferred",    position = "1920x0", scale = 1 },
+}
+wsRange(6, 10, ACER)
+wsRange(11, 15, IIYAMA)
+{{-   else if eq .chezmoi.username "jimmyakela" }}
+MONITORS = {
+    { output = "desc:HP Inc. HP 27f 3CM1021TWY",                  mode = "1920x1080@74.97", position = "-960x0",    scale = 1 },
+    { output = "desc:HP Inc. HP 27f 3CM1021TWW",                  mode = "1920x1080@74.97", position = "960x0",     scale = 1 },
+    { output = "desc:Lenovo Group Limited P27q-30 V30CF4L0",       mode = "2560x1440@69.97", position = "0x0",       scale = 1 },
+    { output = "desc:Hewlett Packard HP 27es 3CM83310W4",          mode = "preferred",       position = "auto-up",   scale = 1 },
+    { output = "desc:Samsung Electric Company LU28R55 H1AK500000", mode = "3840x2160@60",    position = "auto-up",   scale = 1.5 },
+    { output = "eDP-1",                                            mode = "1920x1200@60",    position = "auto-down", scale = 1 },
+    -- Any other external monitor: highest refresh rate, above the laptop
+    { output = "",                                                 mode = "highrr",          position = "auto-up",   scale = "auto" },
+}
+wsRange(11, 15, "desc:HP Inc. HP 27f 3CM1021TWW")
+TOP_EXTERNALS = {
+    "Samsung Electric Company LU28R55 H1AK500000",
+    "Hewlett Packard HP 27es 3CM83310W4",
+}
+{{-   end }}
+{{- end }}
+
+for _, spec in ipairs(MONITORS) do
+    hl.monitor(spec)
+end
+
+for ws = 1, WORKSPACES do
+    hl.workspace_rule({ workspace = tostring(ws), persistent = true, monitor = WORKSPACE_OUTPUT[ws] })
+end
+
+local function placeExternalWorkspaces()
+    if not TOP_EXTERNALS then return end
+    local monitors = hl.get_monitors()
+    local target
+    for _, desc in ipairs(TOP_EXTERNALS) do
+        for _, m in ipairs(monitors) do
+            if m.description == desc then target = m break end
+        end
+        if target then break end
+    end
+    if not target then
+        local externals = {}
+        for _, m in ipairs(monitors) do
+            if not m.name:match("^eDP") then table.insert(externals, m) end
+        end
+        if #externals == 1 then target = externals[1] end
+    end
+    if not target then return end
+
+    local focused = hl.get_active_monitor()
+    for ws = 6, 10 do
+        hl.dispatch(hl.dsp.workspace.move({ workspace = ws, monitor = target.name }))
+    end
+    hl.dispatch(hl.dsp.focus({ monitor = target.name }))
+    hl.dispatch(hl.dsp.focus({ workspace = 6 }))
+    if focused then
+        hl.dispatch(hl.dsp.focus({ monitor = focused.name }))
+    end
+end
+
+hl.on("monitor.added", function()
+    -- give the new output a moment to be fully set up
+    hl.timer(placeExternalWorkspaces, { timeout = 500, type = "oneshot" })
+end)
+
+
+---------------------
+---- MY PROGRAMS ----
+---------------------
+
+local terminal      = "kitty"
+local browser       = "firefox"
+local editor        = "code"
+local fileManager   = "nautilus"
+local menu          = "wofi --show drun"
+local screenshooter = "flameshot gui"
+
+
+-------------------
+---- AUTOSTART ----
+-------------------
+
+hl.on("hyprland.start", function()
+    hl.exec_cmd("awww-daemon")
+    hl.exec_cmd("waybar")
+    hl.exec_cmd("dunst")
+{{- if eq .chezmoi.hostname "Saroamy" }}
+    hl.exec_cmd("nm-applet")
+{{- end }}
+    hl.exec_cmd("sleep 1; awww img ~/bg")
+    hl.exec_cmd("~/.scripts/yay-daily.sh", { max_size = "400 400" })
+    hl.timer(placeExternalWorkspaces, { timeout = 1000, type = "oneshot" })
+end)
+
+-- Re-apply the wallpaper on every config reload (old `exec = awww img ~/bg`)
+hl.on("config.reloaded", function()
+    hl.exec_cmd("awww img ~/bg")
+end)
+
+
+-------------------------------
+---- ENVIRONMENT VARIABLES ----
+-------------------------------
+
+hl.env("XCURSOR_SIZE", "24")
+hl.env("HYPRCURSOR_SIZE", "24")
+
+
+-----------------------
+---- LOOK AND FEEL ----
+-----------------------
+
+hl.config({
+    general = {
+        gaps_in  = 5,
+        gaps_out = { top = 10, right = 20, bottom = 20, left = 20 },
+
+        border_size = 0,
+
+        col = {
+            active_border   = { colors = {"rgba(33ccffee)", "rgba(00ff99ee)"}, angle = 45 },
+            inactive_border = "rgba(595959aa)",
+        },
+
+        resize_on_border = false,
+        allow_tearing    = false,
+        layout           = "dwindle",
+    },
+
+    decoration = {
+        rounding       = 10,
+        rounding_power = 2,
+
+        active_opacity   = 0.92,
+        inactive_opacity = 0.85,
+
+        shadow = {
+            enabled      = true,
+            range        = 32,
+            render_power = 3,
+            color        = "rgba(00000050)",
+        },
+
+        blur = {
+            enabled           = true,
+            size              = 6,
+            passes            = 3,
+            new_optimizations = true,
+            xray              = true,
+            ignore_opacity    = true,
+        },
+    },
+
+    animations = {
+        enabled = true,
+    },
+
+    dwindle = {
+        preserve_split = true,
+    },
+
+    misc = {
+        force_default_wallpaper = 0,
+        disable_hyprland_logo   = true,
+    },
+})
+
+hl.curve("easeOutQuint",   { type = "bezier", points = { {0.23, 1},    {0.32, 1} } })
+hl.curve("easeInOutCubic", { type = "bezier", points = { {0.65, 0.05}, {0.36, 1} } })
+hl.curve("linear",         { type = "bezier", points = { {0, 0},       {1, 1}    } })
+hl.curve("almostLinear",   { type = "bezier", points = { {0.5, 0.5},   {0.75, 1} } })
+hl.curve("quick",          { type = "bezier", points = { {0.15, 0},    {0.1, 1}  } })
+
+hl.animation({ leaf = "global",        enabled = true, speed = 10,   bezier = "default" })
+hl.animation({ leaf = "border",        enabled = true, speed = 5.39, bezier = "easeOutQuint" })
+hl.animation({ leaf = "windows",       enabled = true, speed = 4.79, bezier = "easeOutQuint" })
+hl.animation({ leaf = "windowsIn",     enabled = true, speed = 4.1,  bezier = "easeOutQuint",   style = "popin 87%" })
+hl.animation({ leaf = "windowsOut",    enabled = true, speed = 1.49, bezier = "linear",         style = "popin 87%" })
+hl.animation({ leaf = "fadeIn",        enabled = true, speed = 1.73, bezier = "almostLinear" })
+hl.animation({ leaf = "fadeOut",       enabled = true, speed = 1.46, bezier = "almostLinear" })
+hl.animation({ leaf = "fade",          enabled = true, speed = 3.03, bezier = "quick" })
+hl.animation({ leaf = "layers",        enabled = true, speed = 3.81, bezier = "easeOutQuint" })
+hl.animation({ leaf = "layersIn",      enabled = true, speed = 4,    bezier = "easeOutQuint",   style = "fade" })
+hl.animation({ leaf = "layersOut",     enabled = true, speed = 1.5,  bezier = "linear",         style = "fade" })
+hl.animation({ leaf = "fadeLayersIn",  enabled = true, speed = 1.79, bezier = "almostLinear" })
+hl.animation({ leaf = "fadeLayersOut", enabled = true, speed = 1.39, bezier = "almostLinear" })
+hl.animation({ leaf = "workspaces",    enabled = true, speed = 3,    bezier = "easeInOutCubic", style = "slide" })
+hl.animation({ leaf = "workspacesIn",  enabled = true, speed = 3,    bezier = "easeInOutCubic", style = "slide" })
+hl.animation({ leaf = "workspacesOut", enabled = true, speed = 3,    bezier = "easeInOutCubic", style = "slide" })
+
+
+---------------
+---- INPUT ----
+---------------
+
+hl.config({
+    input = {
+        kb_layout  = "us",
+        kb_variant = "",
+        kb_model   = "",
+        kb_options = "",
+        kb_rules   = "",
+
+        follow_mouse = 1,
+        sensitivity  = 0,
+
+        touchpad = {
+            natural_scroll       = false,
+            clickfinger_behavior = true,
+            tap_to_click         = true,
+        },
+    },
+})
+
+hl.device({
+    name        = "epic-mouse-v1",
+    sensitivity = -0.5,
+})
+
+
+---------------------
+---- KEYBINDINGS ----
+---------------------
+
+local mainMod = "SUPER"
+
+-- Exec binds
+hl.bind(mainMod .. " + Q",      hl.dsp.exec_cmd(browser))
+hl.bind(mainMod .. " + A",      hl.dsp.exec_cmd(editor))
+hl.bind(mainMod .. " + S",      hl.dsp.exec_cmd(screenshooter))
+hl.bind(mainMod .. " + L",      hl.dsp.exec_cmd("hyprlock"))
+hl.bind(mainMod .. " + E",      hl.dsp.exec_cmd(fileManager))
+hl.bind(mainMod .. " + R",      hl.dsp.exec_cmd(menu))
+hl.bind(mainMod .. " + Return", hl.dsp.exec_cmd(terminal))
+
+-- Window binds
+hl.bind(mainMod .. " + C", hl.dsp.window.close())
+hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
+hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit"))
+hl.bind(mainMod .. " + P", hl.dsp.window.pin())
+hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen())
+
+-- Move focus with mainMod + arrows, move windows with mainMod + SHIFT + arrows
+for _, dir in ipairs({ "left", "right", "up", "down" }) do
+    hl.bind(mainMod .. " + " .. dir,             hl.dsp.focus({ direction = dir }))
+    hl.bind(mainMod .. " + SHIFT + " .. dir,     hl.dsp.window.move({ direction = dir }))
+end
+
+-- Global
+hl.bind(mainMod .. " + M", hl.dsp.exit())
+
+-- Workspaces: 1-5 on number keys and 6+ on F1-F10, or 1-9,0 on number keys
+local function wsKey(ws)
+    if FKEY_WORKSPACES then
+        if ws <= 5 then return tostring(ws) end
+        return "F" .. (ws - 5)
+    end
+    return tostring(ws % 10)
+end
+for ws = 1, WORKSPACES do
+    local key = wsKey(ws)
+    hl.bind(mainMod .. " + " .. key,         hl.dsp.focus({ workspace = ws }))
+    hl.bind(mainMod .. " + SHIFT + " .. key, hl.dsp.window.move({ workspace = ws }))
+end
+
+-- Move/resize windows with mainMod + LMB/RMB and dragging
+hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true })
+hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
+
+-- Laptop multimedia keys for volume and LCD brightness
+hl.bind("XF86AudioRaiseVolume",  hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"),   { locked = true, repeating = true })
+hl.bind("XF86AudioLowerVolume",  hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"),   { locked = true, repeating = true })
+hl.bind("XF86AudioMute",         hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"),  { locked = true, repeating = true })
+hl.bind("XF86AudioMicMute",      hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"),{ locked = true, repeating = true })
+hl.bind("XF86MonBrightnessUp",   hl.dsp.exec_cmd("brightnessctl s 10%+"),                        { locked = true, repeating = true })
+hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("brightnessctl s 10%-"),                        { locked = true, repeating = true })
+
+-- Requires playerctl
+hl.bind("XF86AudioNext",  hl.dsp.exec_cmd("playerctl next"),       { locked = true })
+hl.bind("XF86AudioPause", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
+hl.bind("XF86AudioPlay",  hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
+hl.bind("XF86AudioPrev",  hl.dsp.exec_cmd("playerctl previous"),   { locked = true })
+
+
+--------------------------------
+---- WINDOWS AND WORKSPACES ----
+--------------------------------
+
+hl.window_rule({
+    name  = "float-smol-windows",
+    match = { class = "^(smolkitty)$" },
+
+    float = true,
+    size  = "800 600",
+    move  = "100 100",
+})
+
+hl.window_rule({
+    -- Ignore maximize requests from all apps
+    name  = "suppress-maximize-events",
+    match = { class = ".*" },
+
+    suppress_event = "maximize",
+})
+
+hl.window_rule({
+    -- Fix some dragging issues with XWayland
+    name  = "fix-xwayland-drags",
+    match = {
+        class      = "^$",
+        title      = "^$",
+        xwayland   = true,
+        float      = true,
+        fullscreen = false,
+        pin        = false,
+    },
+
+    no_focus = true,
+})
+
+hl.window_rule({
+    name  = "increase-touchpad-scrolling-speed-kitty",
+    match = { class = "^(kitty)$" },
+
+    scroll_touchpad = 4,
+})
